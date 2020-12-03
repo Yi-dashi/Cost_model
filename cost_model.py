@@ -1,9 +1,21 @@
 import torch
 import torch.nn as nn
+import math
 #from mypath import Path
+import torch.utils.model_zoo as model_zoo
 
 from torch.nn import functional as F
 
+__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
+
+
+model_urls = {
+    'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
+    'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
+    'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
+    'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
+    'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
+}
 class attentionblock(nn.Module):
     def __init__(self,in_channel):
         super(attentionblock,self).__init__()
@@ -196,6 +208,25 @@ def get_10x_lr_params(model):
             if k.requires_grad:
                 yield k
 
+def cost50(pretrained=Flase):
+    """Constructs a Cost-Res50 model.
+    Args:
+        pretrained (bool):IF Ture,returns a model pre-trained on ImageNet
+    """
+    model = Cost(costmodel, [3, 4, 6, 3])
+    if pretrained:
+        model.load_state_dict(model_zoo.load_url(model_urls['resnet50']), strict=Flase)
+    return model
+
+def cost101(pretrained=Flase, **kwargs):
+    """Constructs a Cost-Res101 model.
+    Args:
+        pretrained (bool):IF Ture,returns a model pre-trained on ImageNet
+    """
+    model = Cost(costmodel, [3, 4, 23, 3], **kwargs)
+    if pretrained:
+        model.load_state_dict(model_zoo.load_url(model_urls['resnet101']), strict=Flase)
+    return model
 
 if __name__ == "__main__":
     inputs = torch.rand(2, 3, 16, 224, 224)
